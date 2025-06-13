@@ -1,0 +1,72 @@
+@use "../../variables" as *;
+@use "sass:color";
+
+.filter {
+	margin-block: 40px 32px;
+	gap: 25px;
+
+	@media (max-width: 1200px) {
+		flex-direction: column-reverse;
+	}
+}
+
+.categories {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+
+	@media (max-width: 1200px) {
+		justify-content: center;
+	}
+}
+
+.sorted {
+	font-weight: 700;
+	white-space: nowrap;
+
+	span {
+		position: relative;
+		margin-right: -10px;
+	}
+
+	select {
+		appearance: none; /* Отключает стандартный стиль */
+		-webkit-appearance: none; /* Для Safari */
+		-moz-appearance: none; /* Для Firefox */
+		background-color: white;
+		color: $color-dark-orange;
+		border: none;
+		outline: none;
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+		cursor: pointer;
+		padding-left: 14px;
+		font-weight: 400;
+	}
+
+	option {
+		color: $color-black;
+		border: none;
+	}
+}
+
+.btn-shift-sorted {
+    padding-inline: 6px;
+    font-size: 18px;
+    color: $color-dark-orange;
+    border-radius: 50%;
+    transition: background-color $duration ease-in-out;
+
+    &:hover {
+        background-color: $color-orange;
+    }
+
+    &:active {
+        background-color: color.adjust($color-orange, $lightness: -12%);
+    }
+
+	&.down {
+		transform: rotate(180deg);
+	}
+}
