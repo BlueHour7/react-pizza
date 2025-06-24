@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -16,6 +16,7 @@ import { useGetItemsQuery } from "../redux/itemsApi";
 import Filter from "../components/Filter";
 import Pizza from "../components/Pizza";
 import Skeleton from "../components/Pizza/Skeleton";
+import { RootState } from "@/redux/store";
 
 function Home() {
 	console.log("render");
@@ -23,14 +24,14 @@ function Home() {
 	const dispatch = useDispatch();
 
 	const isFilterReady = useSelector(
-		(state) => state.filterSlice.isFilterReady
+		(state: RootState) => state.filterSlice.isFilterReady
 	);
 	const categoryId = useSelector(selectFilterCategory);
 	const sort = useSelector(selectFilterSort);
 	const orderDesc = useSelector(selectOrderDesc);
-	const searchValue = useSelector((state) => state.filterSlice.searchValue);
+	const searchValue = useSelector((state: RootState) => state.filterSlice.searchValue);
 	const curentPagePagination = useSelector(selectCurentPagePagination);
-	const getQuery = useSelector(state => state.filterSlice.query);
+	const getQuery = useSelector((state: RootState) => state.filterSlice.query);
 	const getQueryForSearchParams = getQuery.slice(0, getQuery.lastIndexOf('&'))
 
 	const obj = useGetItemsQuery(getQuery, { skip: !isFilterReady });
@@ -48,10 +49,6 @@ function Home() {
 		);
 	}
 
-	// useEffect(() => {
-	// 	console.log(obj);
-	// }, [obj])
-
 	useEffect(() => {
 		let urlParams = Object.fromEntries(searchParams.entries());
 		if (Object.keys(urlParams).length === 0) {
@@ -59,18 +56,18 @@ function Home() {
 			return;
 		}
 
-		urlParams = {
+		const obj = {
 			categoryId: urlParams.category ?? 0,
 			sort:
 				urlParams.sortBy[0] == "-"
 					? urlParams.sortBy.slice(1)
 					: urlParams.sortBy,
-			orderDesc: urlParams.sortBy[0] == "-" ? true : false,
+			orderDesc: urlParams.sortBy[0] === "-" ? true : false,
 			searchValue: urlParams.title?.slice(1) ?? "",
 			curentPagePagination: urlParams.page ?? 1,
 		};
 
-		dispatch(setAllFilterSetting({ ...urlParams }));
+		dispatch(setAllFilterSetting({ ...obj }));
 	}, []);
 
 	useEffect(() => {

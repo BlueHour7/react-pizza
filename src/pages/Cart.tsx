@@ -1,16 +1,16 @@
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCart, selectCartPrice, selectCartCount } from "../redux/slices/cartSlice";
+import { clearCart, selectCartPizzas } from "../redux/slices/cartSlice";
 
 import PizzaInCart from "../components/PizzaInCart";
 
 function Cart() {
 	const dispatch = useDispatch();
-	const pizzasCart = useSelector((state) => state.cartSlice.pizzas);
-	const totalPrice = useSelector(selectCartPrice);
-	const totalCount = useSelector(selectCartCount);
+	const pizzas = useSelector(selectCartPizzas);
+	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
+	const totalCount = pizzas.length
 
-	if (pizzasCart.length === 0)
+	if (pizzas.length === 0)
 		return (
 			<div className="content-wrapper info">
 				<h2>Корзина пуста 😕</h2>
@@ -107,7 +107,7 @@ function Cart() {
 				</button>
 			</div>
 
-			{pizzasCart.map((item) => (
+			{pizzas.map((item) => (
 				<PizzaInCart key={item.id} {...item} />
 			))}
 

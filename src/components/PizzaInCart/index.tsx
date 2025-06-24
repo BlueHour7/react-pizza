@@ -1,7 +1,8 @@
 import { useDispatch } from "react-redux";
 import { deletePizza, addPizza, minusPizza } from "../../redux/slices/cartSlice";
+import { CartItem } from "@/types";
 
-function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }) {
+function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: CartItem) {
 	const dispatch = useDispatch()
 
 	return (
@@ -14,9 +15,9 @@ function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }) {
 				</div>
 			</div>
 			<div className="cart-amount">
-				<button onClick={() => dispatch(minusPizza({id}))}>-</button>
+				<button onClick={() => dispatch(minusPizza(id))}>-</button>
                 <b>{count}</b>
-				<button onClick={() => dispatch(addPizza({id, price}))}>+</button>
+				<button onClick={() => dispatch(addPizza(id))}>+</button>
 			</div>
 			<span>{price * count} ₽</span>
 			<button className="btn-delete" onClick={ () => dispatch(deletePizza({id}))}>

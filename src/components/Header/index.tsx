@@ -6,7 +6,7 @@ import {
 	setSearchValue,
 	setAllFilterSetting,
 } from "../../redux/slices/filterSlice";
-import { selectCartPrice, selectCartCount } from "../../redux/slices/cartSlice";
+import { selectCartPizzas } from "../../redux/slices/cartSlice";
 import { useSearchParams } from "react-router";
 import "./header.scss";
 
@@ -20,14 +20,15 @@ function Header() {
 	const dispatch = useDispatch();
 	const [query, setQuery] = useState("");
 	const location = useLocation();
-	const inputRef = useRef(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const isFirstRender = useRef(true);
 
 	const hideSearch = location.pathname === "/";
 	const hideCartButton = location.pathname !== "/cart";
 
-	const totalPrice = useSelector(selectCartPrice);
-	const totalCount = useSelector(selectCartCount);
+	const pizzas = useSelector(selectCartPizzas);
+	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
+	const totalCount = pizzas.length
 
 	useEffect(() => {
 		let urlParams = Object.fromEntries(searchParams.entries());
@@ -100,7 +101,7 @@ function Header() {
 					<button
 						onMouseDown={() => {
 							setQuery("");
-							inputRef.current.focus();
+							inputRef.current?.focus();
 							// фокус не работает при он моуз даун, но работает с онКлик
 						}}
 						disabled={query === "" ? true : false}

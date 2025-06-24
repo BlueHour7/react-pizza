@@ -50,7 +50,7 @@ function Filter() {
 				</label>
 				<select
 					value={sort}
-					onChange={(e) => dispatch(setSort(e.target.value))}
+					onChange={(e) => dispatch(setSort(e.target.value as 'rating' | 'price' | 'title'))}
 					id="filtering"
 				>
 					<option value="rating">популярности</option>

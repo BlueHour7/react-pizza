@@ -1,6 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-const initialState = {
+function isCategoryId(num: number): num is FilterSliceState['categoryId'] {
+	return num >= 0 && num <= 5 && Number.isInteger(num)
+}
+
+export interface FilterSliceState {
+	isFilterReady: boolean;
+	categoryId: 0 | 1 | 2 | 3 | 4 | 5;
+	sort: 'rating' | 'price' | 'title';
+	orderDesc: boolean;
+	searchValue: string;
+	curentPagePagination: number;
+	query: string;
+}
+
+const initialState: FilterSliceState = {
 	isFilterReady: false,
 	categoryId: 0,
 	sort: "rating",
@@ -20,38 +35,34 @@ export const filterSlice = createSlice({
 	name: "filter",
 	initialState,
 	reducers: {
-		setCategoryId(state, action) {
-			// console.log(state.curentPagePagination + 'categoryId');
-			state.categoryId = action.payload;
+		setCategoryId(state, action: PayloadAction<number>) {
+			if (isCategoryId(action.payload)) state.categoryId = action.payload;
+			else state.categoryId = 0; // нужна такая же проверка в остальных случаях, чтобы фильтры всегда были правильные
 			state.curentPagePagination = 1;
 			state.query = buildQuery(state)
 		},
-		setSort(state, action) {
-			// console.log(state.curentPagePagination + 'sort');
+		setSort(state, action: PayloadAction<FilterSliceState['sort']>) {
 			state.sort = action.payload;
 			state.curentPagePagination = 1;
 			state.query = buildQuery(state)
 		},
-		setOrderDesc(state, action) {
-			// console.log(state.curentPagePagination + 'orderDesc');
+		setOrderDesc(state, action: PayloadAction<FilterSliceState['orderDesc']>) {
 			state.orderDesc = action.payload;
 			state.curentPagePagination = 1;
 			state.query = buildQuery(state)
 		},
-		setSearchValue(state, action) {
-			// console.log(state.curentPagePagination + 'searchValue');
+		setSearchValue(state, action: PayloadAction<FilterSliceState['searchValue']>) {
 			state.searchValue = action.payload;
 			state.curentPagePagination = 1;
 			state.query = buildQuery(state)
 		},
-		setCurentPagePagination(state, action) {
-			// console.log(state.curentPagePagination + 'pagination');
+		setCurentPagePagination(state, action: PayloadAction<FilterSliceState['curentPagePagination']>) {
 			state.curentPagePagination = action.payload;
 			state.query = buildQuery(state)
 		},
 		setAllFilterSetting(state, action) {
 			state.isFilterReady = true;
-			state.categoryId = Number(action.payload.categoryId);
+			state.categoryId = Number(action.payload.categoryId) as 0 | 1 | 2 | 3 | 4 | 5;
 			state.sort = action.payload.sort;
 			state.orderDesc = action.payload.orderDesc;
 			state.searchValue = action.payload.searchValue;
@@ -66,7 +77,7 @@ export const filterSlice = createSlice({
 	},
 });
 
-function buildQuery(state) {
+function buildQuery(state: Omit<FilterSliceState, 'isFilterReady' | 'query'>) {
 	const { categoryId, sort, orderDesc, searchValue, curentPagePagination} = state
 	const amountPagePaginationInTime = 4;
 	const linkCategory = categoryId === 0 ? "" : `category=${categoryId}&`;
@@ -77,10 +88,10 @@ function buildQuery(state) {
 	return query
 }
 
-export const selectFilterCategory = (state) => state.filterSlice.categoryId;
-export const selectFilterSort = (state) => state.filterSlice.sort;
-export const selectOrderDesc = (state) => state.filterSlice.orderDesc;
-export const selectCurentPagePagination = (state) =>
+export const selectFilterCategory = (state: RootState) => state.filterSlice.categoryId;
+export const selectFilterSort = (state: RootState) => state.filterSlice.sort;
+export const selectOrderDesc = (state: RootState) => state.filterSlice.orderDesc;
+export const selectCurentPagePagination = (state: RootState) =>
 	state.filterSlice.curentPagePagination;
 
 export const {
