@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
 	setSearchValue,
 	setAllFilterSetting,
+	SortSelect,
 } from "../../redux/slices/filterSlice";
 import { selectCartPizzas } from "../../redux/slices/cartSlice";
 import { useSearchParams } from "react-router";
@@ -60,8 +61,7 @@ function Header() {
 					dispatch(
 						setAllFilterSetting({
 							categoryId: 0,
-							sort: "rating",
-							orderDesc: true,
+							sort: SortSelect.RATING,
 							searchValue: "",
 							curentPagePagination: 1,
 						})

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { isSession, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -50,18 +50,12 @@ function Home() {
 			return;
 		}
 
-		const obj = {
-			categoryId: urlParams.category ?? 0,
-			sort:
-				urlParams.sortBy[0] == "-"
-					? urlParams.sortBy.slice(1)
-					: urlParams.sortBy,
-			orderDesc: urlParams.sortBy[0] === "-" ? true : false,
+		dispatch(setAllFilterSetting({
+			categoryId: Number(urlParams.category) ?? 0,
+			sort: urlParams.sortBy,
 			searchValue: urlParams.title?.slice(1) ?? "",
-			curentPagePagination: urlParams.page ?? 1,
-		};
-
-		dispatch(setAllFilterSetting({ ...obj }));
+			curentPagePagination: Number(urlParams.page) ?? 1,
+		}));
 	}, []);
 
 	useEffect(() => {
