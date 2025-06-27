@@ -25,6 +25,14 @@ function Pizza({
 	const [activeSize, setActiveSize] = useState(sizes[0]);
 	const pizzaTypes = ["традиционное", "тонкое"];
 
+	const multiplierPrice = {
+		25: 1,
+		30: 1.5,
+		40: 2,
+	}
+
+	const finalPrice = price * multiplierPrice[activeSize]
+
 	const dispatch = useDispatch();
 	const pizzaCount = useSelector(selectCartPizzaId(id));
 
@@ -34,7 +42,7 @@ function Pizza({
 			dispatch(
 				addPizza({
 					title,
-					price,
+					price: finalPrice,
 					img,
 					id,
 					activeSize,
@@ -115,7 +123,7 @@ function Pizza({
 				</div>
 			</div>
 			<div className="price-buy">
-				<span>от {price} ₽</span>
+				<span>{finalPrice} ₽</span>
 				<button className="button button-add" onClick={addPizzaToCart}>
 					<svg
 						width="12"
