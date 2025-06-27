@@ -52,7 +52,8 @@ function Home() {
 
 		dispatch(setAllFilterSetting({
 			categoryId: Number(urlParams.category) ?? 0,
-			sort: urlParams.sortBy,
+			sort: urlParams.sortBy[0] === "-" ? urlParams.sortBy.slice(1) : urlParams.sortBy,
+			orderDesc: urlParams.sortBy[0] === "-" ? true : false,
 			searchValue: urlParams.title?.slice(1) ?? "",
 			curentPagePagination: Number(urlParams.page) ?? 1,
 		}));

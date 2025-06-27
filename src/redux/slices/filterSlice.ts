@@ -32,8 +32,9 @@ export interface FilterSliceState {
 export interface FilterFromURL {
 	categoryId: number;
 	sort: string;
+	orderDesc: boolean;
 	searchValue: string;
-	curentPagePagination: number
+	curentPagePagination: number;
 }
 
 const initialState: FilterSliceState = {
@@ -84,7 +85,7 @@ export const filterSlice = createSlice({
 			state.isFilterReady = true;
 			state.categoryId = isCategoryId(action.payload.categoryId) ? action.payload.categoryId : 0;
 			state.sort = isSort(action.payload.sort) ? action.payload.sort : SortSelect.RATING;
-			state.orderDesc = action.payload.sort === "-" ? true : false,
+			state.orderDesc = action.payload.orderDesc;
 			state.searchValue = action.payload.searchValue;
 			state.curentPagePagination = Number(
 				action.payload.curentPagePagination

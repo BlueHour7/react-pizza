@@ -62,6 +62,7 @@ function Header() {
 						setAllFilterSetting({
 							categoryId: 0,
 							sort: SortSelect.RATING,
+							orderDesc: true,
 							searchValue: "",
 							curentPagePagination: 1,
 						})
