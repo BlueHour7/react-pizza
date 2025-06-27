@@ -6,7 +6,8 @@ import {
 	setOrderDesc,
 	selectFilterCategory,
 	selectFilterSort,
-	selectOrderDesc
+	selectOrderDesc,
+	SortSelect
 } from "../../redux/slices/filterSlice";
 
 const categories = [
@@ -50,7 +51,7 @@ function Filter() {
 				</label>
 				<select
 					value={sort}
-					onChange={(e) => dispatch(setSort(e.target.value as 'rating' | 'price' | 'title'))}
+					onChange={(e) => dispatch(setSort(e.target.value as SortSelect))}
 					id="filtering"
 				>
 					<option value="rating">популярности</option>

@@ -29,25 +29,19 @@ function Home() {
 	const categoryId = useSelector(selectFilterCategory);
 	const sort = useSelector(selectFilterSort);
 	const orderDesc = useSelector(selectOrderDesc);
-	const searchValue = useSelector((state: RootState) => state.filterSlice.searchValue);
+	const searchValue = useSelector(
+		(state: RootState) => state.filterSlice.searchValue
+	);
 	const curentPagePagination = useSelector(selectCurentPagePagination);
 	const getQuery = useSelector((state: RootState) => state.filterSlice.query);
-	const getQueryForSearchParams = getQuery.slice(0, getQuery.lastIndexOf('&'))
+	const getQueryForSearchParams = getQuery.slice(
+		0,
+		getQuery.lastIndexOf("&")
+	);
 
-	const obj = useGetItemsQuery(getQuery, { skip: !isFilterReady });
-	const { data, isFetching, isSuccess, error } = obj;
-	const items = data?.items;
-	const totalPagePagination = data?.meta.total_pages;
-
-	function isHomePage() {
-		return (
-			categoryId == 0 &&
-			sort == "rating" &&
-			orderDesc == true &&
-			searchValue == "" &&
-			curentPagePagination == 1
-		);
-	}
+	const { data, isFetching, isSuccess, error } = useGetItemsQuery(getQuery, {
+		skip: !isFilterReady,
+	});
 
 	useEffect(() => {
 		let urlParams = Object.fromEntries(searchParams.entries());
@@ -56,18 +50,12 @@ function Home() {
 			return;
 		}
 
-		const obj = {
-			categoryId: urlParams.category ?? 0,
-			sort:
-				urlParams.sortBy[0] == "-"
-					? urlParams.sortBy.slice(1)
-					: urlParams.sortBy,
-			orderDesc: urlParams.sortBy[0] === "-" ? true : false,
+		dispatch(setAllFilterSetting({
+			categoryId: Number(urlParams.category) ?? 0,
+			sort: urlParams.sortBy,
 			searchValue: urlParams.title?.slice(1) ?? "",
-			curentPagePagination: urlParams.page ?? 1,
-		};
-
-		dispatch(setAllFilterSetting({ ...obj }));
+			curentPagePagination: Number(urlParams.page) ?? 1,
+		}));
 	}, []);
 
 	useEffect(() => {
@@ -79,13 +67,33 @@ function Home() {
 				? ""
 				: getQueryForSearchParams;
 
+		const isHomePage =
+			categoryId == 0 &&
+			sort == "rating" &&
+			orderDesc == true &&
+			searchValue == "" &&
+			curentPagePagination == 1;
+
 		if (newParams !== currentParams) {
-			if (isHomePage()) setSearchParams({});
+			if (isHomePage) setSearchParams({});
 			else setSearchParams(new URLSearchParams(getQueryForSearchParams));
 		}
 	}, [categoryId, sort, orderDesc, searchValue, curentPagePagination]);
 
-	function ErrorContent() {
+	if (isFetching || !isSuccess)
+		return (
+			<>
+				<Filter />
+				<h2>Все пиццы</h2>
+				<div className="pizzas">
+					{[...Array(4)].map((_, i) => (
+						<Skeleton key={i} />
+					))}
+				</div>
+			</>
+		);
+
+	if (error)
 		return (
 			<div className="content-wrapper info">
 				<h2>Произошла ошибка 😕</h2>
@@ -95,87 +103,87 @@ function Home() {
 				</p>
 			</div>
 		);
-	}
 
-	function MainContent() {
+	if (!data)
 		return (
 			<>
 				<h2>Все пиццы</h2>
 				<div className="pizzas">
-					{isFetching || !isSuccess
-						? [...Array(4)].map((_, i) => <Skeleton key={i} />)
-						: items.map((item) => (
-							<Pizza key={item.id} {...item}/>
-						))}
+					{[...Array(4)].map((_, i) => (
+						<Skeleton key={i} />
+					))}
 				</div>
-
-				{totalPagePagination > 1 && (
-					<div className="pagination">
-						<ul>
-							{curentPagePagination !== 1 ? (
-								<li>
-									<button
-										onClick={() =>
-											dispatch(
-												setCurentPagePagination(
-													curentPagePagination - 1
-												)
-											)
-										}
-									>{`<`}</button>
-								</li>
-							) : (
-								""
-							)}
-							{[...Array(totalPagePagination)].map((_, ind) => (
-								<li key={ind}>
-									<button
-										onClick={() =>
-											dispatch(
-												setCurentPagePagination(ind + 1)
-											)
-										}
-										className={
-											curentPagePagination === ind + 1
-												? "selected"
-												: ""
-										}
-									>
-										{ind + 1}
-									</button>
-								</li>
-							))}
-							{curentPagePagination !== totalPagePagination ? (
-								<li>
-									<button
-										onClick={() =>
-											dispatch(
-												setCurentPagePagination(
-													curentPagePagination + 1
-												)
-											)
-										}
-									>{`>`}</button>
-								</li>
-							) : (
-								""
-							)}
-						</ul>
-					</div>
-				)}
 			</>
 		);
-	}
 
-	let content;
-	if (error) content = <ErrorContent />;
-	else content = <MainContent />;
+	const items = data.items;
+	const totalPagePagination = data.meta.total_pages;
 
 	return (
-		<main className="content">
+		<>
+			<h2>Все пиццы</h2>
 			<Filter />
-			{content}
-		</main>
+			<div className="pizzas">
+				{items.map((item) => (
+					<Pizza key={item.id} {...item} />
+				))}
+			</div>
+
+			{totalPagePagination > 1 && (
+				<div className="pagination">
+					<ul>
+						{curentPagePagination !== 1 ? (
+							<li>
+								<button
+									onClick={() =>
+										dispatch(
+											setCurentPagePagination(
+												curentPagePagination - 1
+											)
+										)
+									}
+								>{`<`}</button>
+							</li>
+						) : (
+							""
+						)}
+						{[...Array(totalPagePagination)].map((_, ind) => (
+							<li key={ind}>
+								<button
+									onClick={() =>
+										dispatch(
+											setCurentPagePagination(ind + 1)
+										)
+									}
+									className={
+										curentPagePagination === ind + 1
+											? "selected"
+											: ""
+									}
+								>
+									{ind + 1}
+								</button>
+							</li>
+						))}
+						{curentPagePagination !== totalPagePagination ? (
+							<li>
+								<button
+									onClick={() =>
+										dispatch(
+											setCurentPagePagination(
+												curentPagePagination + 1
+											)
+										)
+									}
+								>{`>`}</button>
+							</li>
+						) : (
+							""
+						)}
+					</ul>
+				</div>
+			)}
+		</>
 	);
 }
 
