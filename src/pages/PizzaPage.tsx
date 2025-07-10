@@ -9,8 +9,8 @@ import { useEffect } from "react";
 
 function PizzaPage() {
 	console.log('render');
-	const { id } = useParams();
-	const navigate = useNavigate()
+	const { id } = useParams<{ id: string}>();
+	const navigate: (to: string) => void = useNavigate()
 	const { data } = useGetOneQuery(Number(id), { skip: !isValideId()});
 
 	function isValideId() {

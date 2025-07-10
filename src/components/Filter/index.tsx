@@ -51,7 +51,7 @@ function Filter() {
 				</label>
 				<select
 					value={sort}
-					onChange={(e) => dispatch(setSort(e.target.value as SortSelect))}
+					onChange={(e: React.ChangeEvent<HTMLSelectElement>) => dispatch(setSort(e.target.value as SortSelect))}
 					id="filtering"
 				>
 					<option value="rating">популярности</option>

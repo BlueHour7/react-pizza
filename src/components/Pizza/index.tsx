@@ -8,8 +8,6 @@ import { PizzaType } from "@/types";
 
 const base = import.meta.env.BASE_URL;
 
-// сделать клик по пицце неактивным если уже на странице пиццы
-
 function Pizza({
 	title,
 	price,
@@ -37,7 +35,7 @@ function Pizza({
 	const pizzaCount = useSelector(selectCartPizzaId(id));
 
 	function addPizzaToCart() {
-		if (typeof pizzaCount == "number") dispatch(addPizza(id));
+		if (typeof pizzaCount === "number") dispatch(addPizza(id));
 		else
 			dispatch(
 				addPizza({
