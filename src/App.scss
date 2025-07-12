@@ -346,6 +346,22 @@ h2 {
 		transition: background-color $duration ease-in-out,
 			border-color $duration ease-in-out;
 
+		&:disabled {
+			cursor: auto;
+			opacity: 0.3;
+			color: #787878;
+			border-color: #787878;
+
+			&:hover {
+				background-color: transparent;
+				color: #787878;
+			}
+
+			&:active {
+				transform: none;
+			}
+		}
+
 		& :nth-child(1) {
 			margin-inline: auto;
 		}

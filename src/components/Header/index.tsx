@@ -29,7 +29,7 @@ function Header() {
 
 	const pizzas = useSelector(selectCartPizzas);
 	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
-	const totalCount = pizzas.length
+	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
 	useEffect(() => {
 		let urlParams = Object.fromEntries(searchParams.entries());

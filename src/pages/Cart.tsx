@@ -8,7 +8,7 @@ function Cart() {
 	const dispatch = useDispatch();
 	const pizzas = useSelector(selectCartPizzas);
 	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
-	const totalCount = pizzas.length
+	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
 	if (pizzas.length === 0)
 		return (
