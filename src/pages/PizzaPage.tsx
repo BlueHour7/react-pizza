@@ -1,31 +1,25 @@
-import { useNavigate, useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import Pizza from "../components/Pizza";
-import { useGetOneQuery, itemsApi } from "../redux/itemsApi";
+import { useGetOneQuery } from "../redux/itemsApi";
 import Skeleton from "../components/Pizza/Skeleton";
-import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-// тут не оч хорошо сделано, потому что useGetOneQuery(Number(id), { skip: !isValideId()}) может вернуть NaN
-// но TS это пропустит потому что нан тоже число как бы. По сути у меня проверка есть, но не с точки зрения TS
+function isValideId(id: string | undefined): id is string {
+	return id !== undefined && Number(id) < 100 && Number(id) > 0;
+}
 
 function PizzaPage() {
-	console.log('render');
-	const { id } = useParams<{ id: string}>();
-	const navigate: (to: string) => void = useNavigate()
-	const { data } = useGetOneQuery(Number(id), { skip: !isValideId()});
+	console.log("render");
+	const { id } = useParams<{ id: string }>();
 
-	function isValideId() {
-		return id !== undefined && Number(id) && Number(id) < 100 && Number(id) > 0
+	if (!isValideId(id)) {
+		toast.error('Такой пиццы нет. Перенаправление на главную')
+		return <Navigate to="/" replace />;
 	}
-
-	useEffect(() => {
-		if (!isValideId()) {
-			navigate('/')
-			alert('Такой пиццы нет. Перенаправление на главную')
-		}
-	}, [id, navigate])
+	
+	const { data } = useGetOneQuery(id, { skip: !isValideId(id) });
 
 	if (!data) return <Skeleton />;
-
 	return <Pizza {...data[0]} isPage={true} />;
 }
 

@@ -23,7 +23,7 @@ export const itemsApi = createApi({
         getItems: builder.query<responseDataType, string>({
             query: (params) => `items?${params}`,
         }),
-        getOne: builder.query<PizzaType[], number>({
+        getOne: builder.query<PizzaType[], string>({
             query: (id) => `items?id=${id}`
         })
     })

@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import PizzaPage from "./pages/PizzaPage";
+import { ToastContainer } from "react-toastify";
 
 function App() {
 	return (
@@ -17,6 +18,7 @@ function App() {
 				<Route path="*" element={<NotFound />} />
 				<Route path="/pizza/:id" element={<PizzaPage />} />
 			</Routes>
+			<ToastContainer position="top-center"/>
 		</div>
 	);
 }
