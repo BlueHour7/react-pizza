@@ -14,16 +14,12 @@ export const cartSlice = createSlice({
 	name: "cart",
 	initialState,
 	reducers: {
-		addPizza(
-			state,
-			action: PayloadAction<CartItem | number>
-		) {
+		addPizza(state, action: PayloadAction<CartItem | number>) {
 			if (typeof action.payload === "number") {
 				const thisPizza = state.pizzas.find(
 					(item) => item.id === action.payload
 				);
 				if (thisPizza) thisPizza.count++;
-
 			} else {
 				state.pizzas.push(action.payload);
 			}
@@ -54,7 +50,7 @@ export const cartSlice = createSlice({
 	},
 });
 
-export const selectCartPizzas = (state: RootState) => state.cartSlice.pizzas
+export const selectCartPizzas = (state: RootState) => state.cartSlice.pizzas;
 
 export const selectCartPizzaId = (id: number) => (state: RootState) =>
 	state.cartSlice.pizzas.find((item: CartItem) => item.id === id)?.count;

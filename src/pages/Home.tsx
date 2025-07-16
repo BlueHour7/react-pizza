@@ -13,7 +13,6 @@ import {
 } from "../redux/slices/filterSlice";
 import { useGetItemsQuery } from "../redux/itemsApi";
 
-import Filter from "../components/Filter";
 import Pizza from "../components/Pizza";
 import Skeleton from "../components/Pizza/Skeleton";
 import { RootState } from "@/redux/store";
@@ -84,7 +83,6 @@ function Home() {
 	if (isFetching || !isSuccess)
 		return (
 			<>
-				<Filter />
 				<h2>Все пиццы</h2>
 				<div className="pizzas">
 					{[...Array(4)].map((_, i) => (
@@ -123,7 +121,6 @@ function Home() {
 	return (
 		<>
 			<h2>Все пиццы</h2>
-			<Filter />
 			<div className="pizzas">
 				{items.map((item) => (
 					<Pizza key={item.id} {...item} />
