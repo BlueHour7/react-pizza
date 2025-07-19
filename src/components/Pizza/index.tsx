@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addPizza } from "../../redux/slices/cartSlice";
 import { selectCartPizzaId } from "../../redux/slices/cartSlice";
 import { Link } from "react-router";
-import { PizzaType } from "@/types";
+import type { PizzaType } from "@/types";
 
 const base = import.meta.env.BASE_URL;
 

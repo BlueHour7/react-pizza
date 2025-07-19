@@ -1,4 +1,4 @@
-import { PizzaType } from "@/types";
+import type { PizzaType } from "@/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const API_URL = 'https://eaf192b91ef37184.mokky.dev/'

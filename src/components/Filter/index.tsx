@@ -7,8 +7,8 @@ import {
 	selectFilterCategory,
 	selectFilterSort,
 	selectOrderDesc,
-	SortSelect
 } from "../../redux/slices/filterSlice";
+import type { SortSelect } from "../../redux/slices/filterSlice";
 
 const categories = [
 	"Все",

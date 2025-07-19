@@ -1,30 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
 	setCurentPagePagination,
-	setAllFilterSetting,
-	setIsFilterReady,
 	selectFilterCategory,
 	selectFilterSort,
 	selectOrderDesc,
 	selectCurentPagePagination,
 } from "../redux/slices/filterSlice";
+import type { FilterSliceState } from "../redux/slices/filterSlice";
+import type { RootState } from "@/redux/store";
 import { useGetItemsQuery } from "../redux/itemsApi";
 
 import Pizza from "../components/Pizza";
 import Skeleton from "../components/Pizza/Skeleton";
-import { RootState } from "@/redux/store";
+
+export function buildQuery(filters: FilterSliceState) {
+    const { categoryId, sort, orderDesc, searchValue, curentPagePagination} = filters
+    const amountPagePaginationInTime = 4;
+    const linkCategory = categoryId === 0 ? "" : `category=${categoryId}&`;
+    const linkSortBy = "sortBy=" + (orderDesc ? "-" : "") + `${sort}`;
+    const linkSearch = searchValue === "" ? "" : `&title=*${searchValue}`;
+    const linkPagination = `&page=${curentPagePagination}&limit=${amountPagePaginationInTime}`;
+    const query = `${linkCategory}${linkSortBy}${linkSearch}${linkPagination}`;
+    return query
+}
 
 function Home() {
 	console.log("render");
 	const [searchParams, setSearchParams] = useSearchParams();
 	const dispatch = useDispatch();
+	const isFirstRender = useRef(true);
 
-	const isFilterReady = useSelector(
-		(state: RootState) => state.filterSlice.isFilterReady
-	);
 	const categoryId = useSelector(selectFilterCategory);
 	const sort = useSelector(selectFilterSort);
 	const orderDesc = useSelector(selectOrderDesc);
@@ -32,35 +40,20 @@ function Home() {
 		(state: RootState) => state.filterSlice.searchValue
 	);
 	const curentPagePagination = useSelector(selectCurentPagePagination);
-	const getQuery = useSelector((state: RootState) => state.filterSlice.query);
+	const getQuery = buildQuery({categoryId, sort, orderDesc, searchValue, curentPagePagination})
 	const getQueryForSearchParams = getQuery.slice(
 		0,
 		getQuery.lastIndexOf("&")
 	);
 
-	const { data, isFetching, isSuccess, error } = useGetItemsQuery(getQuery, {
-		skip: !isFilterReady,
-	});
+	const { data, isFetching, isSuccess, error } = useGetItemsQuery(getQuery);
 
 	useEffect(() => {
-		let urlParams = Object.fromEntries(searchParams.entries());
-		if (Object.keys(urlParams).length === 0) {
-			dispatch(setIsFilterReady());
-			return;
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+			return
 		}
-
-		dispatch(setAllFilterSetting({
-			categoryId: Number(urlParams.category) ?? 0,
-			sort: urlParams.sortBy[0] === "-" ? urlParams.sortBy.slice(1) : urlParams.sortBy,
-			orderDesc: urlParams.sortBy[0] === "-" ? true : false,
-			searchValue: urlParams.title?.slice(1) ?? "",
-			curentPagePagination: Number(urlParams.page) ?? 1,
-		}));
-	}, []);
-
-	useEffect(() => {
-		if (!isFilterReady) return;
-
+		
 		const currentParams = searchParams.toString();
 		const newParams =
 			getQueryForSearchParams == "sortBy=-rating&page=1"
@@ -78,6 +71,7 @@ function Home() {
 			if (isHomePage) setSearchParams({});
 			else setSearchParams(new URLSearchParams(getQueryForSearchParams));
 		}
+		if (isFirstRender.current) isFirstRender.current = false
 	}, [categoryId, sort, orderDesc, searchValue, curentPagePagination]);
 
 	if (isFetching || !isSuccess)

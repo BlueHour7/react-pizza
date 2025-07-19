@@ -7,9 +7,7 @@ export const localStorageMiddleware: Middleware =
 		const result = next(action);
 		if (action.type.startsWith("cart/")) {
 			const cart = store.getState().cartSlice;
-			console.log(cart);
 			localStorage.setItem("cart", JSON.stringify(cart));
 		}
-
 		return result;
 	};

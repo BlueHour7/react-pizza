@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { deletePizza, addPizza, minusPizza } from "../../redux/slices/cartSlice";
-import { CartItem } from "@/types";
+import type { CartItem } from "@/types";
 
 function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: CartItem) {
 	const dispatch = useDispatch()
