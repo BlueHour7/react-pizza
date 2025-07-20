@@ -28,7 +28,7 @@ function setFiltersFromURL(): FilterSliceState {
             categoryId: isCategoryId(categoryId) ? categoryId : 0,
 			sort: isSort(sort) ? sort : SortSelect.RATING,
 			orderDesc,
-			searchValue: params.get('title')?.slice(1) ?? "",
+			searchValue: params.get('title')?.slice(1, 11) ?? "",
 			curentPagePagination: Number(params.get('page') ?? 1),
     }
 }

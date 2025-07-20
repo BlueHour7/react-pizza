@@ -8,18 +8,16 @@ import {
 	SortSelect,
 } from "../../redux/slices/filterSlice";
 import { selectCartPizzas } from "../../redux/slices/cartSlice";
-import { useSearchParams } from "react-router";
 import "./header.scss";
 
-import pizzaLogo from '/icons/pizza-logo.svg'
-import drawerImg from '/icons/drawer.svg'
-import searchLoupeImg from '/icons/search-loupe1.svg'
-import closeImg from '/icons/close.svg'
+import pizzaLogo from "/icons/pizza-logo.svg";
+import drawerImg from "/icons/drawer.svg";
+import searchLoupeImg from "/icons/search-loupe1.svg";
+import closeImg from "/icons/close.svg";
+import type { RootState } from "@/redux/store";
 
 function Header() {
-	const [searchParams] = useSearchParams();
 	const dispatch = useDispatch();
-	const [query, setQuery] = useState("");
 	const location = useLocation();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const isFirstRender = useRef(true);
@@ -28,14 +26,13 @@ function Header() {
 	const hideCartButton = location.pathname !== "/cart";
 
 	const pizzas = useSelector(selectCartPizzas);
+	const searchValue = useSelector(
+		(state: RootState) => state.filterSlice.searchValue
+	);
 	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
 	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
-	useEffect(() => {
-		let urlParams = Object.fromEntries(searchParams.entries());
-		if (!urlParams.title) return;
-		setQuery(urlParams.title.slice(1));
-	}, []);
+	const [query, setQuery] = useState(searchValue ?? '');
 
 	useEffect(() => {
 		if (isFirstRender.current) {
@@ -69,12 +66,7 @@ function Header() {
 					);
 				}}
 			>
-				<img
-					src={pizzaLogo}
-					width="38"
-					height="38"
-					alt="logo"
-				/>
+				<img src={pizzaLogo} width="38" height="38" alt="logo" />
 				<div>
 					<h1>React pizza</h1>
 					<span>самая вкусная пицца во вселенной</span>
@@ -93,7 +85,7 @@ function Header() {
 					<input
 						ref={inputRef}
 						value={query}
-						onChange={(e) => setQuery(e.target.value)}
+						onChange={(e) => setQuery(e.target.value.slice(-10))}
 						type="text"
 						className="search-input"
 						placeholder="Поисе пиццы"
@@ -107,12 +99,7 @@ function Header() {
 						}}
 						disabled={query === "" ? true : false}
 					>
-						<img
-							src={closeImg}
-							alt=""
-							width={22}
-							height={22}
-						/>
+						<img src={closeImg} alt="" width={22} height={22} />
 					</button>
 				</div>
 			)}
