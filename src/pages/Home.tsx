@@ -28,7 +28,6 @@ export function buildQuery(filters: FilterSliceState) {
 }
 
 function Home() {
-	console.log("render");
 	const [searchParams, setSearchParams] = useSearchParams();
 	const dispatch = useDispatch();
 	const isFirstRender = useRef(true);

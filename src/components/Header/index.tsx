@@ -88,7 +88,7 @@ function Header() {
 						onChange={(e) => setQuery(e.target.value.slice(-10))}
 						type="text"
 						className="search-input"
-						placeholder="Поисе пиццы"
+						placeholder="Поиск пиццы"
 					/>
 
 					<button

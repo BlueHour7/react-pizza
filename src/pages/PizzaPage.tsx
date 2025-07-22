@@ -9,7 +9,6 @@ function isValideId(id: string | undefined): id is string {
 }
 
 function PizzaPage() {
-	console.log("render");
 	const { id } = useParams<{ id: string }>();
 
 	if (!isValideId(id)) {

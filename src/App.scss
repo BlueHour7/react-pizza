@@ -8,8 +8,8 @@ body {
 }
 
 a {
-  text-decoration: none; /* убираем подчёркивание */
-  color: inherit;         /* наследуем цвет */
+	text-decoration: none; /* убираем подчёркивание */
+	color: inherit; /* наследуем цвет */
 }
 
 h1 {
@@ -23,6 +23,11 @@ h1 {
 h2 {
 	font-size: 32px;
 	font-weight: 700;
+
+	@media (max-width: 440px) {
+		text-align: center;
+		padding-top: 10px;
+	}
 }
 
 .wrapper {
@@ -34,12 +39,13 @@ h2 {
 	padding-block: 50px;
 	padding-inline: clamp(20px, 3.12vw, 60px);
 
-	@media (max-width: 1200px) {
+	@media (max-width: 1400px) {
 		width: 85vw;
 	}
 
 	@media (max-width: 760px) {
 		width: 100%;
+		border-radius: 0;
 	}
 }
 
@@ -194,10 +200,10 @@ h2 {
 	justify-content: start;
 	flex-wrap: wrap;
 	margin-inline: auto;
-	row-gap: 3.4vw;
+	row-gap: max(40px, 3.4vw);
 	column-gap: 35px;
 
-	@media (max-width: 1200px) {
+	@media (max-width: 1400px) {
 		justify-content: center;
 	}
 }
@@ -245,7 +251,7 @@ h2 {
 	margin-inline: auto;
 	font-size: 22px;
 
-	@media (max-width: 760px) {
+	@media (max-width: 860px) {
 		font-size: 18px;
 	}
 }
@@ -344,7 +350,7 @@ h2 {
 	.cart-info {
 		min-width: 160px;
 
-		@media (max-width: 760px) {
+		@media (max-width: 860px) {
 			& span:last-child {
 				display: block;
 			}
@@ -419,9 +425,9 @@ h2 {
 		}
 	}
 
-	@media (max-width: 760px) {
+	@media (max-width: 860px) {
 		flex-direction: column;
-		row-gap: 2px;
+		row-gap: 16px;
 	}
 }
 
@@ -435,10 +441,15 @@ h2 {
 
 .exit-pay {
 	font-size: 16px;
+	gap: 12px;
 
 	.button {
 		width: 210px;
 		padding-block: 16px;
+
+		@media (max-width: 440px) {
+			width: 46%;
+		}
 	}
 }
 

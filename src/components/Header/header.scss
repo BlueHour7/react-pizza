@@ -5,7 +5,7 @@
 	grid-template-areas: "logo search button";
 	justify-content: space-between;
 	align-items: center;
-	gap: 20px;
+	gap: 25px;
 	padding-bottom: clamp(20px, 3.5vw, 40px);
 	border-bottom: 1px solid $gray-line;
 
@@ -17,23 +17,41 @@
 		grid-area: logo;
 		gap: 18px;
 		min-width: 220px;
+
+		@media (max-width: 440px) {
+			justify-content: start;
+			width: 90%;
+
+			h1 {
+				font-size: 20px;
+			}
+		}
 	}
 
 	span {
 		color: #7b7b7b;
 	}
 
-	@media (max-width: 760px) {
+	@media (max-width: 860px) {
 		grid-template-areas:
 			"logo button"
 			"search search";
+	}
+
+	@media (max-width: 440px) {
+		gap: 16px;
+		justify-content: stretch;
+		justify-items: center;
+		grid-template-areas:
+			"logo"
+			"button"
+			"search";
 	}
 }
 
 .search {
 	grid-area: search;
 	position: relative;
-    align-self: center;
 
 	.search-loupe {
 		position: absolute;
@@ -54,9 +72,8 @@
 		}
 	}
 
-	@media (max-width: 760px) {
-		width: 80%;
-        justify-self: center; 
+	@media (max-width: 860px) {
+		width: 90%;
 	}
 }
 
@@ -72,13 +89,21 @@
 	&:focus {
 		border: 1px solid rgba(0, 0, 0, 0.4);
 		width: clamp(100px, 30vw, 400px);
+
+		@media (max-width: 860px) {
+			width: 100%;
+		}
 	}
 
-	@media (max-width: 760px) {
+	@media (max-width: 860px) {
 		width: 100%;
 	}
 }
 
 .header-button {
 	grid-area: button;
+
+	@media (max-width: 440px) {
+		width: 90%;
+	}
 }
