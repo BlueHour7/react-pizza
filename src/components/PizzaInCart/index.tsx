@@ -11,7 +11,7 @@ function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: Ca
                 <img src={`img/${img}`} alt="" width={80} height={80} />
 				<div className="cart-info">
 					<h3>{title}</h3>
-					<span>{pizzaType}, {activeSize} см</span>
+					<span>{pizzaType},</span><span>{activeSize} см</span>
 				</div>
 			</div>
 			<div className="cart-amount">

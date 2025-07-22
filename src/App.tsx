@@ -28,7 +28,7 @@ function App() {
 				<Route path="*" element={<NotFound />} />
 				<Route path="/pizza/:id" element={<PizzaPage />} />
 			</Routes>
-			<ToastContainer position="top-center"/>
+			<ToastContainer position="top-right"/>
 		</div>
 	);
 }

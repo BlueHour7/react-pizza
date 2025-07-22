@@ -46,6 +46,19 @@
 			animation: rotate 10s linear infinite;
 		}
 	}
+
+	@media (max-width: 1200px) {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto;
+		justify-items: center;
+		gap: 20px;
+		column-gap: 40px;
+		grid-template-areas:
+			"img"
+			"title"
+			"info"
+			"buy";
+	}
 }
 
 h3 {
@@ -63,6 +76,10 @@ h3 {
 	grid-area: img;
 	width: 100%;
 	height: auto;
+
+	@media (max-width: 1200px) {
+		max-width: 460px
+	}
 }
 
 .pizza-info {

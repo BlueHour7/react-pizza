@@ -2,7 +2,7 @@
 @use "sass:color";
 
 .filter {
-	margin-block: 40px 32px;
+	margin-block: clamp(20px, 3vw, 40px) clamp(16px, 3vw, 32px);
 	gap: 25px;
 
 	@media (max-width: 1200px) {

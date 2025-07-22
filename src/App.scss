@@ -7,6 +7,11 @@ body {
 	font-family: Nunito, Roboto, sans-serif;
 }
 
+a {
+  text-decoration: none; /* убираем подчёркивание */
+  color: inherit;         /* наследуем цвет */
+}
+
 h1 {
 	font-size: 24px;
 	font-weight: 800;
@@ -176,7 +181,6 @@ h2 {
 }
 
 // ----ОСНОВНЫЕ КЛАССЫ--------------------------------
-.header,
 .header__logo,
 .filter {
 	display: flex;
@@ -192,6 +196,10 @@ h2 {
 	margin-inline: auto;
 	row-gap: 3.4vw;
 	column-gap: 35px;
+
+	@media (max-width: 1200px) {
+		justify-content: center;
+	}
 }
 
 .pagination {
@@ -325,6 +333,7 @@ h2 {
 	padding-block: 30px;
 	font-weight: 700;
 	border-top: 1px solid $gray-line;
+	gap: 8px;
 
 	.cart-description span {
 		font-size: 18px;
@@ -333,7 +342,13 @@ h2 {
 	}
 
 	.cart-info {
-		min-width: 200px;
+		min-width: 160px;
+
+		@media (max-width: 760px) {
+			& span:last-child {
+				display: block;
+			}
+		}
 	}
 
 	button {
@@ -425,4 +440,14 @@ h2 {
 		width: 210px;
 		padding-block: 16px;
 	}
+}
+
+// ----Классы страницы не найдена--------------------------------
+.not-found {
+	margin-block: clamp(20px, 3vw, 40px);
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
 }

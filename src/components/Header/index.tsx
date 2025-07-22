@@ -105,7 +105,7 @@ function Header() {
 			)}
 
 			{hideCartButton && (
-				<Link to="/cart" className="button button-cart">
+				<Link to="/cart" className="button button-cart header-button">
 					{totalPrice} ₽<div className="vertical-line"></div>
 					<img src={drawerImg} width="18" height="18" alt="" />
 					{totalCount}

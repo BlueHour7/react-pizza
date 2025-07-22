@@ -1,56 +1,84 @@
-@use '../../variables' as *;
+@use "../../variables" as *;
 
 .header {
-    padding-bottom: 40px;
-    border-bottom: 1px solid $gray-line;
+	display: grid;
+	grid-template-areas: "logo search button";
+	justify-content: space-between;
+	align-items: center;
+	gap: 20px;
+	padding-bottom: clamp(20px, 3.5vw, 40px);
+	border-bottom: 1px solid $gray-line;
 
-    img {
-        flex-shrink: 0;
-    }
+	img {
+		flex-shrink: 0;
+	}
 
-    .header__logo {
-        gap: 18px;
-    }
+	.header__logo {
+		grid-area: logo;
+		gap: 18px;
+		min-width: 220px;
+	}
 
-    span {
-        color: #7B7B7B;
-    }
+	span {
+		color: #7b7b7b;
+	}
+
+	@media (max-width: 760px) {
+		grid-template-areas:
+			"logo button"
+			"search search";
+	}
 }
 
 .search {
-    position: relative;
+	grid-area: search;
+	position: relative;
+    align-self: center;
 
-    .search-loupe {
-        position: absolute;
-        left: 14px;
-        top: 12px;
-    }
+	.search-loupe {
+		position: absolute;
+		left: 14px;
+		top: 12px;
+	}
 
-    button {
-        opacity: 1;
-        position: absolute;
-        right: 14px;
-        top: 12px;
-        transition: opacity $duration ease-in-out;
+	button {
+		opacity: 1;
+		position: absolute;
+		right: 14px;
+		top: 12px;
+		transition: opacity $duration ease-in-out;
 
-        &:disabled {
-            opacity: 0;
-            cursor: default;
-        }
-    }
+		&:disabled {
+			opacity: 0;
+			cursor: default;
+		}
+	}
+
+	@media (max-width: 760px) {
+		width: 80%;
+        justify-self: center; 
+	}
 }
 
 .search-input {
-    border: 1px solid rgba(0, 0, 0, .1);
-    padding: 12px 20px;
-    padding-left: 42px;
-    width: 350px;
-    border-radius: 12px;
-    outline: none;
-    transition: width $duration ease-in-out;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 12px 20px;
+	padding-left: 42px;
+	width: clamp(100px, 30vw, 300px);
+	border-radius: 12px;
+	outline: none;
+	transition: width $duration ease-in-out;
 
-    &:focus {
-        border: 1px solid rgba(0, 0, 0, .4);
-        width: 400px;
-    }
+	&:focus {
+		border: 1px solid rgba(0, 0, 0, 0.4);
+		width: clamp(100px, 30vw, 400px);
+	}
+
+	@media (max-width: 760px) {
+		width: 100%;
+	}
+}
+
+.header-button {
+	grid-area: button;
 }
