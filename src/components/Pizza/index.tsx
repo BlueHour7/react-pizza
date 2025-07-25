@@ -1,5 +1,5 @@
 import "./pizza.scss";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addPizza } from "../../redux/slices/cartSlice";
 import { selectCartPizzaId } from "../../redux/slices/cartSlice";
@@ -18,6 +18,47 @@ function Pizza({
 	id,
 	isPage = false,
 }: PizzaType) {
+	const angleRef = useRef(0);
+	const animationFrame = useRef(0);
+	const speedRef = useRef(0);
+	const targetSpeed = useRef(0.6);
+	const pizzaImg = useRef<HTMLImageElement | null>(null);
+
+	const animate = () => {
+		speedRef.current += (targetSpeed.current - speedRef.current) * 0.05;
+
+		if (speedRef.current > 0.59) speedRef.current = 0.6
+		angleRef.current += speedRef.current;
+
+		if (pizzaImg.current) {
+			pizzaImg.current.style.transform = `rotate(${angleRef.current}deg)`;
+		}
+
+		if (Math.abs(speedRef.current) > 0.01) {
+			animationFrame.current = requestAnimationFrame(animate);
+		} else {
+			speedRef.current = 0;
+			animationFrame.current = 0;
+		}
+
+		console.log(speedRef.current);
+	};
+
+	const handleMouseEnter = () => {
+		targetSpeed.current = 0.6;
+		if (animationFrame.current === 0) {
+			animationFrame.current = requestAnimationFrame(animate);
+		}
+	};
+
+	const handleMouseLeave = () => {
+		targetSpeed.current = 0;
+	};
+
+	useEffect(() => {
+		return () => cancelAnimationFrame(animationFrame.current);
+	}, []);
+
 	const wrapperClass = isPage ? "pizza-page" : "pizza";
 
 	const [activeType, setActiveType] = useState(types[0]);
@@ -28,9 +69,9 @@ function Pizza({
 		25: 1,
 		30: 1.5,
 		40: 2,
-	}
+	};
 
-	const finalPrice = price * multiplierPrice[activeSize]
+	const finalPrice = price * multiplierPrice[activeSize];
 
 	const dispatch = useDispatch();
 	const pizzaCount = useSelector(selectCartPizzaId(id));
@@ -49,24 +90,33 @@ function Pizza({
 					count: 1,
 				})
 			);
-		toast.info('Пицца добавлена')
+		toast.info("Пицца добавлена");
 	}
 
 	return (
-		<div className={wrapperClass}>
+		<div
+			className={wrapperClass}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+		>
 			{isPage ? (
 				<>
 					<img
 						src={`${base}img/${img}`}
 						alt="пицца"
 						className="pizza-img"
+						ref={pizzaImg}
 					/>
 					<h3>{title}</h3>
 				</>
 			) : (
 				<>
 					<Link to={`/pizza/${id}`} className="pizza-img">
-						<img src={`${base}img/${img}`} alt="пицца" />
+						<img
+							src={`${base}img/${img}`}
+							alt="пицца"
+							ref={pizzaImg}
+						/>
 					</Link>
 					<h3>
 						<Link to={`/pizza/${id}`}>{title}</Link>
