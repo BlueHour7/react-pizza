@@ -1,7 +1,7 @@
 import { Navigate, useParams } from "react-router";
 import Pizza from "../components/Pizza";
 import { useGetOneQuery } from "../redux/itemsApi";
-import Skeleton from "../components/Pizza/Skeleton";
+import { SkeletonPage } from "../components/Pizza/SkeletonPage";
 import { toast } from "react-toastify";
 
 function isValideId(id: string | undefined): id is string {
@@ -18,7 +18,8 @@ function PizzaPage() {
 	
 	const { data } = useGetOneQuery(id, { skip: !isValideId(id) });
 
-	if (!data) return <Skeleton />;
+	if (!data) return <SkeletonPage />
+
 	return <Pizza {...data[0]} isPage={true} />;
 }
 

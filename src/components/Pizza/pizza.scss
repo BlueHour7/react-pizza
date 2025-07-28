@@ -1,14 +1,5 @@
 @use "../../variables" as *;
 
-// @keyframes rotate {
-// 	from {
-// 		transform: rotate(0deg);
-// 	}
-// 	to {
-// 		transform: rotate(360deg);
-// 	}
-// }
-
 .pizza {
 	width: 280px;
 	display: flex;
@@ -16,12 +7,6 @@
 	justify-content: center;
 	gap: 18px;
 	text-align: center;
-
-	// &:hover {
-	// 	img {
-	// 		animation: rotate 10s linear infinite;
-	// 	}
-	// }
 }
 
 .pizza-page {
@@ -40,12 +25,6 @@
 		font-size: 32px;
 		text-align: center;
 	}
-
-	// &:hover {
-	// 	img {
-	// 		animation: rotate 10s linear infinite;
-	// 	}
-	// }
 
 	@media (max-width: 1200px) {
 		grid-template-columns: 1fr;
@@ -78,7 +57,7 @@ h3 {
 	height: auto;
 
 	@media (max-width: 1200px) {
-		max-width: 460px
+		max-width: 460px;
 	}
 }
 
