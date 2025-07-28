@@ -7,7 +7,7 @@ import PizzaInCart from "../components/PizzaInCart";
 function Cart() {
 	const dispatch = useDispatch();
 	const pizzas = useSelector(selectCartPizzas);
-	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
+	const totalPrice = pizzas.reduce((acc, item) => acc + item.price * item.count, 0);
 	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
 	if (pizzas.length === 0)

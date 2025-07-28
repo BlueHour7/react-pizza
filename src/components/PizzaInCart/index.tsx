@@ -17,7 +17,7 @@ function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: Ca
 			<div className="cart-amount">
 				<button onClick={() => dispatch(minusPizza(id))} disabled={count === 1 ? true : false}>-</button>
                 <b>{count}</b>
-				<button onClick={() => dispatch(addPizza(id))}>+</button>
+				<button onClick={() => dispatch(addPizza(id))} disabled={count === 10 ? true : false}>+</button>
 			</div>
 			<span>{price * count} ₽</span>
 			<button className="btn-delete" onClick={ () => dispatch(deletePizza({id}))}>
