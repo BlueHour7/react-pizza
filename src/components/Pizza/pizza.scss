@@ -24,6 +24,14 @@
 	h3 {
 		font-size: 32px;
 		text-align: center;
+		
+		a {
+			cursor: auto;
+		}
+	}
+
+	.pizza-img {
+		cursor: auto;
 	}
 
 	@media (max-width: 1200px) {
@@ -52,6 +60,8 @@ h3 {
 }
 
 .pizza-img {
+	min-width: 280px;
+	min-height: 280px;
 	grid-area: img;
 	width: 100%;
 	height: auto;

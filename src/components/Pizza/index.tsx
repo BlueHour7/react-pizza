@@ -7,7 +7,7 @@ import { Link } from "react-router";
 import type { PizzaType } from "@/types";
 import { toast } from "react-toastify";
 
-const base = import.meta.env.BASE_URL;
+const fallback = import.meta.env.BASE_URL + "img/fallback-pizza.png";
 
 function Pizza({
 	title,
@@ -18,6 +18,7 @@ function Pizza({
 	id,
 	isPage = false,
 }: PizzaType) {
+	const isFallbackRef = useRef(false);
 	const angleRef = useRef(0);
 	const animationFrame = useRef(0);
 	const speedRef = useRef(0);
@@ -27,7 +28,7 @@ function Pizza({
 	const animate = () => {
 		speedRef.current += (targetSpeed.current - speedRef.current) * 0.05;
 
-		if (speedRef.current > 0.59) speedRef.current = 0.6
+		if (speedRef.current > 0.59) speedRef.current = 0.6;
 		angleRef.current += speedRef.current;
 
 		if (pizzaImg.current) {
@@ -40,11 +41,10 @@ function Pizza({
 			speedRef.current = 0;
 			animationFrame.current = 0;
 		}
-
-		console.log(speedRef.current);
 	};
 
 	const handleMouseEnter = () => {
+		if (isFallbackRef.current) return;
 		targetSpeed.current = 0.6;
 		if (animationFrame.current === 0) {
 			animationFrame.current = requestAnimationFrame(animate);
@@ -93,43 +93,47 @@ function Pizza({
 		toast.info("Пицца добавлена");
 	}
 
+	function stopLink(e: React.MouseEvent) {
+		if (isPage) {
+			e.preventDefault;
+			e.stopPropagation;
+		}
+	}
+
 	return (
 		<div
 			className={wrapperClass}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 		>
-			{isPage ? (
-				<>
+			<>
+				<Link to={`/pizza/${id}`}>
 					<img
-						src={`${base}img/${img}`}
-						alt="пицца"
 						className="pizza-img"
+						src={img}
+						alt="пицца"
 						ref={pizzaImg}
+						onClick={ (e) => stopLink(e)}
+						onError={(e) => {
+							if (e.currentTarget.src !== fallback) {
+								isFallbackRef.current = true;
+								e.currentTarget.src = fallback;
+							}
+						}}
 					/>
-					<h3>{title}</h3>
-				</>
-			) : (
-				<>
-					<Link to={`/pizza/${id}`} className="pizza-img">
-						<img
-							src={`${base}img/${img}`}
-							alt="пицца"
-							ref={pizzaImg}
-						/>
-					</Link>
-					<h3>
-						<Link to={`/pizza/${id}`}>{title}</Link>
-					</h3>
-				</>
-			)}
+				</Link>
+				<h3>
+					<Link onClick={ (e) => stopLink(e)} to={`/pizza/${id}`}>{title}</Link>
+				</h3>
+			</>
+
 			<div className="pizza-info">
 				{isPage && (
 					<>
 						<p>
-							<b>Состав:</b> креветки , томаты , шампиньоны , соус
-							песто, моцарелла, итальянские травы , фирменный
-							томатный соус
+							<b>Состав:</b> креветки, томаты, шампиньоны, соус
+							песто, моцарелла, итальянские травы, фирменный
+							томатный соус.
 						</p>
 						<p>
 							<b>Энергетическая ценность: </b>226.4 ккал
