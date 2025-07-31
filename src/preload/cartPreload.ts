@@ -1,0 +1,1 @@
+export const preloadCart = () => import("../pages/Cart")

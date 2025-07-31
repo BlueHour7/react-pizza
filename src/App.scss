@@ -454,7 +454,7 @@ h2 {
 }
 
 // ----Классы страницы не найдена--------------------------------
-.not-found {
+.not-found, .fallbackCart {
 	margin-block: clamp(20px, 3vw, 40px);
 	display: flex;
 	justify-content: center;

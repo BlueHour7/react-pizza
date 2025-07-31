@@ -8,8 +8,9 @@ import {
 	SortSelect,
 } from "../../redux/slices/filterSlice";
 import { selectCartPizzas } from "../../redux/slices/cartSlice";
-import "./header.scss";
+import { preloadCart } from "@/preload/cartPreload";
 
+import "./header.scss";
 import pizzaLogo from "/icons/pizza-logo.svg";
 import drawerImg from "/icons/drawer.svg";
 import searchLoupeImg from "/icons/search-loupe1.svg";
@@ -105,7 +106,7 @@ function Header() {
 			)}
 
 			{hideCartButton && (
-				<Link to="/cart" className="button button-cart header-button">
+				<Link to="/cart" className="button button-cart header-button" onMouseEnter={preloadCart}>
 					{totalPrice} ₽<div className="vertical-line"></div>
 					<img src={drawerImg} width="18" height="18" alt="" />
 					{totalCount}

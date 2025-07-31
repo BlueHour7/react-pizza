@@ -3,12 +3,12 @@ import { deletePizza, addPizza, minusPizza } from "../../redux/slices/cartSlice"
 import type { CartItem } from "@/types";
 
 function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: CartItem) {
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 
 	return (
 		<div className="cart-pizza">
 			<div className="cart-description">
-                <img src={`img/${img}`} alt="" width={80} height={80} />
+                <img src={img} alt="картинка пиццы" width={80} height={80} />
 				<div className="cart-info">
 					<h3>{title}</h3>
 					<span>{pizzaType},</span><span>{activeSize} см</span>
