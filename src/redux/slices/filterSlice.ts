@@ -58,14 +58,8 @@ export const filterSlice = createSlice({
 		setCurentPagePagination(state, action: PayloadAction<FilterSliceState['curentPagePagination']>) {
 			state.curentPagePagination = action.payload;
 		},
-		setAllFilterSetting(state, action: PayloadAction<FilterSliceState>) {
-			state.categoryId = isCategoryId(action.payload.categoryId) ? action.payload.categoryId : 0;
-			state.sort = isSort(action.payload.sort) ? action.payload.sort : SortSelect.RATING;
-			state.orderDesc = action.payload.orderDesc;
-			state.searchValue = action.payload.searchValue;
-			state.curentPagePagination = Number(
-				action.payload.curentPagePagination
-			);
+		resetFilters(state) {
+			return initialState
 		},
 	},
 });
@@ -82,7 +76,7 @@ export const {
 	setOrderDesc,
 	setSearchValue,
 	setCurentPagePagination,
-	setAllFilterSetting,
+	resetFilters,
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

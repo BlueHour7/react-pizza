@@ -7,7 +7,10 @@ import PizzaInCart from "../components/PizzaInCart";
 function Cart() {
 	const dispatch = useDispatch();
 	const pizzas = useSelector(selectCartPizzas);
-	const totalPrice = pizzas.reduce((acc, item) => acc + item.price * item.count, 0);
+	const totalPrice = pizzas.reduce(
+		(acc, item) => acc + item.price * item.count,
+		0
+	);
 	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
 	if (pizzas.length === 0)
@@ -15,8 +18,8 @@ function Cart() {
 			<div className="content-wrapper info">
 				<h2>Корзина пуста 😕</h2>
 				<p>
-					Вероятней всего, вы не заказывали ещё пиццу. Для того, чтобы
-					заказать пиццу, перейди на главную страницу.
+					Здесь появятся товары и кнопка оформления, но вы еще ничего
+					не заказали. Перейдите в витрину для покупок
 				</p>
 				<img src="img/empty-cart.png" alt="" />
 				<Link to="/" className="header__logo">

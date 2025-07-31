@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	setSearchValue,
-	setAllFilterSetting,
+	resetFilters,
 	SortSelect,
 } from "../../redux/slices/filterSlice";
 import { selectCartPizzas } from "../../redux/slices/cartSlice";
@@ -33,7 +33,7 @@ function Header() {
 	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
 	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
-	const [query, setQuery] = useState(searchValue ?? '');
+	const [query, setQuery] = useState(searchValue ?? "");
 
 	useEffect(() => {
 		if (isFirstRender.current) {
@@ -56,15 +56,7 @@ function Header() {
 				className="header__logo"
 				onClick={() => {
 					setQuery("");
-					dispatch(
-						setAllFilterSetting({
-							categoryId: 0,
-							sort: SortSelect.RATING,
-							orderDesc: true,
-							searchValue: "",
-							curentPagePagination: 1,
-						})
-					);
+					dispatch(resetFilters());
 				}}
 			>
 				<img src={pizzaLogo} width="38" height="38" alt="logo" />
@@ -106,7 +98,11 @@ function Header() {
 			)}
 
 			{hideCartButton && (
-				<Link to="/cart" className="button button-cart header-button" onMouseEnter={preloadCart}>
+				<Link
+					to="/cart"
+					className="button button-cart header-button"
+					onMouseEnter={preloadCart}
+				>
 					{totalPrice} ₽<div className="vertical-line"></div>
 					<img src={drawerImg} width="18" height="18" alt="" />
 					{totalCount}

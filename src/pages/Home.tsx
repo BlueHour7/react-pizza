@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -8,6 +8,7 @@ import {
 	selectFilterSort,
 	selectOrderDesc,
 	selectCurentPagePagination,
+	resetFilters,
 } from "../redux/slices/filterSlice";
 import type { FilterSliceState } from "../redux/slices/filterSlice";
 import type { RootState } from "@/redux/store";
@@ -17,14 +18,15 @@ import Pizza from "../components/Pizza";
 import Skeleton from "../components/Pizza/Skeleton";
 
 export function buildQuery(filters: FilterSliceState) {
-    const { categoryId, sort, orderDesc, searchValue, curentPagePagination} = filters
-    const amountPagePaginationInTime = 4;
-    const linkCategory = categoryId === 0 ? "" : `category=${categoryId}&`;
-    const linkSortBy = "sortBy=" + (orderDesc ? "-" : "") + `${sort}`;
-    const linkSearch = searchValue === "" ? "" : `&title=*${searchValue}`;
-    const linkPagination = `&page=${curentPagePagination}&limit=${amountPagePaginationInTime}`;
-    const query = `${linkCategory}${linkSortBy}${linkSearch}${linkPagination}`;
-    return query
+	const { categoryId, sort, orderDesc, searchValue, curentPagePagination } =
+		filters;
+	const amountPagePaginationInTime = 4;
+	const linkCategory = categoryId === 0 ? "" : `category=${categoryId}&`;
+	const linkSortBy = "sortBy=" + (orderDesc ? "-" : "") + `${sort}`;
+	const linkSearch = searchValue === "" ? "" : `&title=*${searchValue}`;
+	const linkPagination = `&page=${curentPagePagination}&limit=${amountPagePaginationInTime}`;
+	const query = `${linkCategory}${linkSortBy}${linkSearch}${linkPagination}`;
+	return query;
 }
 
 function Home() {
@@ -39,7 +41,13 @@ function Home() {
 		(state: RootState) => state.filterSlice.searchValue
 	);
 	const curentPagePagination = useSelector(selectCurentPagePagination);
-	const getQuery = buildQuery({categoryId, sort, orderDesc, searchValue, curentPagePagination})
+	const getQuery = buildQuery({
+		categoryId,
+		sort,
+		orderDesc,
+		searchValue,
+		curentPagePagination,
+	});
 	const getQueryForSearchParams = getQuery.slice(
 		0,
 		getQuery.lastIndexOf("&")
@@ -50,28 +58,31 @@ function Home() {
 	useEffect(() => {
 		if (isFirstRender.current) {
 			isFirstRender.current = false;
-			return
+			return;
 		}
-		
+
 		const currentParams = searchParams.toString();
 		const newParams =
 			getQueryForSearchParams == "sortBy=-rating&page=1"
 				? ""
 				: getQueryForSearchParams;
 
-		const isHomePage =
-			categoryId == 0 &&
-			sort == "rating" &&
-			orderDesc == true &&
-			searchValue == "" &&
-			curentPagePagination == 1;
-
 		if (newParams !== currentParams) {
-			if (isHomePage) setSearchParams({});
+			if (isHome()) setSearchParams({});
 			else setSearchParams(new URLSearchParams(getQueryForSearchParams));
 		}
-		if (isFirstRender.current) isFirstRender.current = false
+		if (isFirstRender.current) isFirstRender.current = false;
 	}, [categoryId, sort, orderDesc, searchValue, curentPagePagination]);
+
+	function isHome() {
+	return (
+		categoryId == 0 &&
+		sort == "rating" &&
+		orderDesc == true &&
+		searchValue == "" &&
+		curentPagePagination == 1
+	);
+}
 
 	if (isFetching || !isSuccess)
 		return (
@@ -113,11 +124,25 @@ function Home() {
 
 	return (
 		<>
-			<h2>Все пиццы</h2>
+			{isHome() && <h2>Все пиццы</h2>}
 			<div className="pizzas">
-				{items.map((item) => (
-					<Pizza key={item.id} {...item} />
-				))}
+				{items.length !== 0 ? (
+					items.map((item) => <Pizza key={item.id} {...item} />)
+				) : (
+					<div className="content-wrapper info">
+						<h2>Не найдено питс по заданным фильтрам 😔</h2>
+						<p>Поменяйте фильтры или перейдите на главную</p>
+						<Link
+							to="/"
+							className="header__logo"
+							onClick={() => dispatch(resetFilters())}
+						>
+							<button className="button button-cart">
+								Сбросить фильтры
+							</button>
+						</Link>
+					</div>
+				)}
 			</div>
 
 			{totalPagePagination > 1 && (
