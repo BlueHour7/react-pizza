@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -16,8 +16,9 @@ import { useGetItemsQuery } from "../redux/itemsApi";
 
 import Pizza from "../components/Pizza";
 import Skeleton from "../components/Pizza/Skeleton";
+import { categories } from "@/components/Filter";
 
-export function buildQuery(filters: FilterSliceState) {
+function buildQuery(filters: FilterSliceState) {
 	const { categoryId, sort, orderDesc, searchValue, curentPagePagination } =
 		filters;
 	const amountPagePaginationInTime = 4;
@@ -32,7 +33,6 @@ export function buildQuery(filters: FilterSliceState) {
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const dispatch = useDispatch();
-	const isFirstRender = useRef(true);
 
 	const categoryId = useSelector(selectFilterCategory);
 	const sort = useSelector(selectFilterSort);
@@ -56,10 +56,12 @@ function Home() {
 	const { data, isFetching, isSuccess, error } = useGetItemsQuery(getQuery);
 
 	useEffect(() => {
-		if (isFirstRender.current) {
-			isFirstRender.current = false;
-			return;
-		}
+		const isHome =
+			categoryId == 0 &&
+			sort == "rating" &&
+			orderDesc == true &&
+			searchValue == "" &&
+			curentPagePagination == 1;
 
 		const currentParams = searchParams.toString();
 		const newParams =
@@ -68,26 +70,15 @@ function Home() {
 				: getQueryForSearchParams;
 
 		if (newParams !== currentParams) {
-			if (isHome()) setSearchParams({});
+			if (isHome) setSearchParams({});
 			else setSearchParams(new URLSearchParams(getQueryForSearchParams));
 		}
-		if (isFirstRender.current) isFirstRender.current = false;
 	}, [categoryId, sort, orderDesc, searchValue, curentPagePagination]);
-
-	function isHome() {
-	return (
-		categoryId == 0 &&
-		sort == "rating" &&
-		orderDesc == true &&
-		searchValue == "" &&
-		curentPagePagination == 1
-	);
-}
 
 	if (isFetching || !isSuccess)
 		return (
 			<>
-				<h2>Все пиццы</h2>
+				{<h2>{categories[categoryId]} пиццы</h2>}
 				<div className="pizzas">
 					{[...Array(4)].map((_, i) => (
 						<Skeleton key={i} />
@@ -107,24 +98,12 @@ function Home() {
 			</div>
 		);
 
-	if (!data)
-		return (
-			<>
-				<h2>Все пиццы</h2>
-				<div className="pizzas">
-					{[...Array(4)].map((_, i) => (
-						<Skeleton key={i} />
-					))}
-				</div>
-			</>
-		);
-
 	const items = data.items;
 	const totalPagePagination = data.meta.total_pages;
 
 	return (
 		<>
-			{isHome() && <h2>Все пиццы</h2>}
+			{<h2>{categories[categoryId]} пиццы</h2>}
 			<div className="pizzas">
 				{items.length !== 0 ? (
 					items.map((item) => <Pizza key={item.id} {...item} />)

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
 	setSearchValue,
 	resetFilters,
-	SortSelect,
 } from "../../redux/slices/filterSlice";
 import { selectCartPizzas } from "../../redux/slices/cartSlice";
 import { preloadCart } from "@/preload/cartPreload";
@@ -50,7 +49,6 @@ function Header() {
 
 	return (
 		<header className="header">
-			{/* вот здесб надо добавить обработчик на клик */}
 			<Link
 				to="/"
 				className="header__logo"

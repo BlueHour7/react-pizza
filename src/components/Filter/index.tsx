@@ -10,7 +10,7 @@ import {
 } from "../../redux/slices/filterSlice";
 import type { SortSelect } from "../../redux/slices/filterSlice";
 
-const categories = [
+export const categories = [
 	"Все",
 	"Мясные",
 	"Вегетарианские",
