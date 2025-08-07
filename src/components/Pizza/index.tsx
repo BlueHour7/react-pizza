@@ -18,6 +18,13 @@ function Pizza({
 	id,
 	isPage = false,
 }: PizzaType) {
+	const dispatch = useDispatch();
+	let pizzaCount: number | null = useSelector(selectCartPizzaId(id));
+	pizzaCount = pizzaCount === 0 ? null : pizzaCount;
+	const [activeType, setActiveType] = useState(types[0]);
+	const [activeSize, setActiveSize] = useState(0);
+	const pizzaTypes = ["традиционное", "тонкое"];
+
 	const isFallbackRef = useRef(false);
 	const angleRef = useRef(0);
 	const animationFrame = useRef(0);
@@ -61,36 +68,21 @@ function Pizza({
 
 	const wrapperClass = isPage ? "pizza-page" : "pizza";
 
-	const [activeType, setActiveType] = useState(types[0]);
-	const [activeSize, setActiveSize] = useState(sizes[0]);
-	const pizzaTypes = ["традиционное", "тонкое"];
-
-	const multiplierPrice = {
-		25: 1,
-		30: 1.5,
-		40: 2,
-	};
-
-	const finalPrice = price * multiplierPrice[activeSize];
-
-	const dispatch = useDispatch();
-	const pizzaCount = useSelector(selectCartPizzaId(id));
-
 	function addPizzaToCart() {
-		if (typeof pizzaCount === "number") dispatch(addPizza(id));
-		else
-			dispatch(
-				addPizza({
-					title,
-					price: finalPrice,
-					img,
-					id,
-					activeSize,
-					pizzaType: pizzaTypes[activeType],
-					count: 1,
-				})
-			);
-		toast.info("Пицца добавлена");
+		const keyConfigPizza =
+			String(sizes[activeSize]) + String(pizzaTypes[activeType]);
+		dispatch(
+			addPizza({
+				title,
+				img,
+				id,
+				price: price[activeSize],
+				size: sizes[activeSize],
+				pizzaType: pizzaTypes[activeType],
+				count: 1
+			})
+		);
+		toast.info(`Пицца ${title} ${sizes[activeSize]} см добавлена в корзину`);
 	}
 
 	function stopLink(e: React.MouseEvent) {
@@ -113,7 +105,7 @@ function Pizza({
 						src={img}
 						alt="пицца"
 						ref={pizzaImg}
-						onClick={ (e) => stopLink(e)}
+						onClick={(e) => stopLink(e)}
 						onError={(e) => {
 							if (e.currentTarget.src !== fallback) {
 								isFallbackRef.current = true;
@@ -123,7 +115,9 @@ function Pizza({
 					/>
 				</Link>
 				<h3>
-					<Link onClick={ (e) => stopLink(e)} to={`/pizza/${id}`}>{title}</Link>
+					<Link onClick={(e) => stopLink(e)} to={`/pizza/${id}`}>
+						{title}
+					</Link>
 				</h3>
 			</>
 
@@ -161,14 +155,16 @@ function Pizza({
 						))}
 					</ul>
 					<ul className="pizza-size">
-						{sizes.map((size) => (
+						{sizes.map((size, ind) => (
 							<li
 								key={size}
 								className={
-									activeSize === size ? "is-active" : ""
+									sizes[activeSize] === size
+										? "is-active"
+										: ""
 								}
 							>
-								<button onClick={() => setActiveSize(size)}>
+								<button onClick={() => setActiveSize(ind)}>
 									{size} см
 								</button>
 							</li>
@@ -177,7 +173,7 @@ function Pizza({
 				</div>
 			</div>
 			<div className="price-buy">
-				<span>{finalPrice} ₽</span>
+				<span>{price[activeSize]} ₽</span>
 				<button className="button button-add" onClick={addPizzaToCart}>
 					<svg
 						width="12"

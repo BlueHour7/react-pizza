@@ -29,7 +29,7 @@ function Header() {
 	const searchValue = useSelector(
 		(state: RootState) => state.filterSlice.searchValue
 	);
-	const totalPrice = pizzas.reduce((acc, item) => acc + item.price, 0);
+	const totalPrice = pizzas.reduce((acc, item) => acc + item.price * item.count, 0);
 	const totalCount = pizzas.reduce((acc, item) => acc + item.count, 0);
 
 	const [query, setQuery] = useState(searchValue ?? "");
@@ -85,8 +85,7 @@ function Header() {
 					<button
 						onMouseDown={() => {
 							setQuery("");
-							inputRef.current?.focus();
-							// фокус не работает при он моуз даун, но работает с онКлик
+							setTimeout( () => inputRef.current?.focus(), 0)
 						}}
 						disabled={query === "" ? true : false}
 					>

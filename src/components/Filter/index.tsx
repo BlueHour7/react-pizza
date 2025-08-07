@@ -8,7 +8,7 @@ import {
 	selectFilterSort,
 	selectOrderDesc,
 } from "../../redux/slices/filterSlice";
-import type { SortSelect } from "../../redux/slices/filterSlice";
+import { SortSelect } from "../../redux/slices/filterSlice";
 
 export const categories = [
 	"Все",
@@ -54,9 +54,9 @@ function Filter() {
 					onChange={(e: React.ChangeEvent<HTMLSelectElement>) => dispatch(setSort(e.target.value as SortSelect))}
 					id="filtering"
 				>
-					<option value="rating">популярности</option>
-					<option value="price">цене</option>
-					<option value="title">алфавиту</option>
+					<option value={SortSelect.RATING}>популярности</option>
+					<option value={SortSelect.PRICE}>цене</option>
+					<option value={SortSelect.TITLE}>алфавиту</option>
 				</select>
 				<button
 					onClick={() =>

@@ -1,26 +1,63 @@
 import { useDispatch } from "react-redux";
-import { deletePizza, addPizza, minusPizza } from "../../redux/slices/cartSlice";
+import {
+	deletePizza,
+	addPizza,
+	minusPizza,
+} from "../../redux/slices/cartSlice";
 import type { CartItem } from "@/types";
 
-function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: CartItem) {
+function PizzaInCart({
+	title,
+	price,
+	img,
+	id,
+	size,
+	pizzaType,
+	count,
+}: CartItem) {
 	const dispatch = useDispatch();
 
 	return (
 		<div className="cart-pizza">
 			<div className="cart-description">
-                <img src={img} alt="картинка пиццы" width={80} height={80} />
+				<img src={img} alt="картинка пиццы" width={80} height={80} />
 				<div className="cart-info">
 					<h3>{title}</h3>
-					<span>{pizzaType},</span><span>{activeSize} см</span>
+					<span>{pizzaType}, </span><span>{size} см</span>
 				</div>
 			</div>
 			<div className="cart-amount">
-				<button onClick={() => dispatch(minusPizza(id))} disabled={count === 1 ? true : false}>-</button>
-                <b>{count}</b>
-				<button onClick={() => dispatch(addPizza(id))} disabled={count === 10 ? true : false}>+</button>
+				<button
+					onClick={() => dispatch(minusPizza({id, size, pizzaType}))}
+					disabled={count === 1 ? true : false}
+				>
+					-
+				</button>
+				<b>{count}</b>
+				<button
+					onClick={() =>
+						dispatch(
+							addPizza({
+								title,
+								price,
+								img,
+								id,
+								size,
+								pizzaType,
+								count,
+							})
+						)
+					}
+					disabled={count === 10 ? true : false}
+				>
+					+
+				</button>
 			</div>
 			<span>{price * count} ₽</span>
-			<button className="btn-delete" onClick={ () => dispatch(deletePizza({id}))}>
+			<button
+				className="btn-delete"
+				onClick={() => dispatch(deletePizza({ id, size, pizzaType }))}
+			>
 				<svg
 					width="10"
 					height="10"
@@ -42,4 +79,4 @@ function PizzaInCart({ title, price, img, id, activeSize, pizzaType, count }: Ca
 	);
 }
 
-export default PizzaInCart
+export default PizzaInCart;

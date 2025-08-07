@@ -110,8 +110,8 @@ function Cart() {
 				</button>
 			</div>
 
-			{pizzas.map((item) => (
-				<PizzaInCart key={item.id} {...item} />
+			{pizzas.map((item, ind) => (
+				<PizzaInCart key={ind} {...item} />
 			))}
 
 			<div className="total">
@@ -119,7 +119,7 @@ function Cart() {
 					Всего пицц: <b>{totalCount} шт.</b>
 				</span>
 				<span>
-					Сумма заказа: <b className="text-orange">{totalPrice} ₽</b>
+					Сумма заказа: <b>{totalPrice} ₽</b>
 				</span>
 			</div>
 
@@ -143,7 +143,7 @@ function Cart() {
 					</svg>
 					Вернуться назад
 				</Link>
-				<button className="button button-cart">Оплатить сейчас</button>
+				<button className="button button-cart"><a href="https://t.me/Ubik1">Оплатить сейчас</a></button>
 			</div>
 		</div>
 	);

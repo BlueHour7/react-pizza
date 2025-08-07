@@ -1,6 +1,6 @@
 export type PizzaType = {
 	title: string;
-	price: number;
+	price: number[];
 	img: string;
 	types: [0] | [1] | [0, 1];
 	sizes: (25 | 30 | 40)[];
@@ -13,7 +13,7 @@ export type CartItem = {
 	price: number;
 	img: string;
 	id: number;
-	activeSize: number;
+	size: number;
 	pizzaType: string;
 	count: number;
 };
