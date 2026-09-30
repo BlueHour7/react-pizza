@@ -9,6 +9,7 @@ import {
 	selectOrderDesc,
 	selectCurentPagePagination,
 	resetFilters,
+	selectIsDefaultFilter,
 } from "../redux/slices/filterSlice";
 import type { FilterSliceState } from "../redux/slices/filterSlice";
 import type { RootState } from "@/redux/store";
@@ -29,11 +30,12 @@ function buildQuery(filters: FilterSliceState) {
 	const query = `${linkCategory}${linkSortBy}${linkSearch}${linkPagination}`;
 	return query;
 }
+// эта функция берет объект фильтра из хранилища и превращает его в строку
+// она будет отправляться на сервер для пагинации и отображать текущий фильтер в адресе
 
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const dispatch = useDispatch();
-
 	const categoryId = useSelector(selectFilterCategory);
 	const sort = useSelector(selectFilterSort);
 	const orderDesc = useSelector(selectOrderDesc);
@@ -41,6 +43,7 @@ function Home() {
 		(state: RootState) => state.filterSlice.searchValue
 	);
 	const curentPagePagination = useSelector(selectCurentPagePagination);
+	const isDefaultFilter = useSelector(selectIsDefaultFilter)
 	const getQuery = buildQuery({
 		categoryId,
 		sort,
@@ -56,13 +59,6 @@ function Home() {
 	const { data, isFetching, isSuccess, error } = useGetItemsQuery(getQuery);
 
 	useEffect(() => {
-		const isHome =
-			categoryId == 0 &&
-			sort == "rating" &&
-			orderDesc == true &&
-			searchValue == "" &&
-			curentPagePagination == 1;
-
 		const currentParams = searchParams.toString();
 		const newParams =
 			getQueryForSearchParams == "sortBy=-rating&page=1"
@@ -70,10 +66,12 @@ function Home() {
 				: getQueryForSearchParams;
 
 		if (newParams !== currentParams) {
-			if (isHome) setSearchParams({});
+			if (isDefaultFilter) setSearchParams({});
 			else setSearchParams(new URLSearchParams(getQueryForSearchParams));
 		}
 	}, [categoryId, sort, orderDesc, searchValue, curentPagePagination]);
+	// эффект который срабатывает при изменении фильтра. Если открыта главная, параметры урл пустые
+	// В противном случае отображаются урл параметры фильтра
 
 	if (isFetching || !isSuccess)
 		return (
@@ -86,6 +84,7 @@ function Home() {
 				</div>
 			</>
 		);
+		//
 
 	if (error)
 		return (
