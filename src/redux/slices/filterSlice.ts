@@ -24,7 +24,7 @@ export interface FilterSliceState {
 	sort: SortSelect;
 	orderDesc: boolean;
 	searchValue: string;
-	curentPagePagination: number;
+	page: number;
 }
 
 const initialState: FilterSliceState = {
@@ -32,7 +32,7 @@ const initialState: FilterSliceState = {
 	sort: SortSelect.RATING,
 	orderDesc: true,
 	searchValue: "",
-	curentPagePagination: 1,
+	page: 1,
 };
 
 export const filterSlice = createSlice({
@@ -41,22 +41,22 @@ export const filterSlice = createSlice({
 	reducers: {
 		setCategoryId(state, action: PayloadAction<number>) {
 			state.categoryId = isCategoryId(action.payload) ? action.payload : 0
-			state.curentPagePagination = 1;
+			state.page = 1;
 		},
 		setSort(state, action: PayloadAction<FilterSliceState['sort']>) {
 			state.sort = action.payload;
-			state.curentPagePagination = 1;
+			state.page = 1;
 		},
 		setOrderDesc(state, action: PayloadAction<FilterSliceState['orderDesc']>) {
 			state.orderDesc = action.payload;
-			state.curentPagePagination = 1;
+			state.page = 1;
 		},
 		setSearchValue(state, action: PayloadAction<FilterSliceState['searchValue']>) {
 			state.searchValue = action.payload;
-			state.curentPagePagination = 1;
+			state.page = 1;
 		},
-		setCurentPagePagination(state, action: PayloadAction<FilterSliceState['curentPagePagination']>) {
-			state.curentPagePagination = action.payload;
+		setCurentPagePagination(state, action: PayloadAction<FilterSliceState['page']>) {
+			state.page = action.payload;
 		},
 		resetFilters() {
 			return initialState
@@ -67,8 +67,9 @@ export const filterSlice = createSlice({
 export const selectFilterCategory = (state: RootState) => state.filterSlice.categoryId;
 export const selectFilterSort = (state: RootState) => state.filterSlice.sort;
 export const selectOrderDesc = (state: RootState) => state.filterSlice.orderDesc;
+export const selectSearchValue = (state: RootState) => state.filterSlice.searchValue;
 export const selectCurentPagePagination = (state: RootState) =>
-	state.filterSlice.curentPagePagination;
+	state.filterSlice.page;
 export const selectIsDefaultFilter = (state: RootState) => {
 	const filter = state.filterSlice;
 
@@ -77,7 +78,7 @@ export const selectIsDefaultFilter = (state: RootState) => {
 		filter.sort === initialState.sort &&
 		filter.orderDesc === initialState.orderDesc &&
 		filter.searchValue === initialState.searchValue &&
-		filter.curentPagePagination === initialState.curentPagePagination
+		filter.page === initialState.page
 	);
 }
 

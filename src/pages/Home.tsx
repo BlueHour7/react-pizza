@@ -1,37 +1,42 @@
-import { useEffect } from "react";
-import { Link, useSearchParams } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
 	setCurentPagePagination,
 	selectFilterCategory,
 	selectFilterSort,
 	selectOrderDesc,
+	selectSearchValue,
 	selectCurentPagePagination,
 	resetFilters,
 	selectIsDefaultFilter,
-} from "../redux/slices/filterSlice";
-import type { FilterSliceState } from "../redux/slices/filterSlice";
-import type { RootState } from "@/redux/store";
-import { useGetItemsQuery } from "../redux/itemsApi";
+} from '@/redux/slices/filterSlice';
+import type { FilterSliceState } from '@/redux/slices/filterSlice';
+import { useGetItemsQuery } from '@/redux/itemsApi';
 
-import Pizza from "../components/Pizza";
-import Skeleton from "../components/Pizza/Skeleton";
-import { categories } from "@/components/Filter";
+import Pizza from '@/components/Pizza';
+import Skeleton from '@/components/Pizza/Skeleton';
+import Pagination from '@/components/Pagination';
+import { categories } from '@/components/Filter';
 
-function buildQuery(filters: FilterSliceState) {
-	const { categoryId, sort, orderDesc, searchValue, curentPagePagination } =
-		filters;
-	const amountPagePaginationInTime = 4;
-	const linkCategory = categoryId === 0 ? "" : `category=${categoryId}&`;
-	const linkSortBy = "sortBy=" + (orderDesc ? "-" : "") + `${sort}`;
-	const linkSearch = searchValue === "" ? "" : `&title=*${searchValue}`;
-	const linkPagination = `&page=${curentPagePagination}&limit=${amountPagePaginationInTime}`;
-	const query = `${linkCategory}${linkSortBy}${linkSearch}${linkPagination}`;
-	return query;
+const ITEMS_PER_PAGE = 4;
+
+function buildSearchParams(filters: FilterSliceState) {
+	const { categoryId, sort, orderDesc, searchValue, page } = filters;
+	const params = new URLSearchParams();
+
+	if (categoryId !== 0) {
+		params.set('category', String(categoryId));
+	}
+
+	params.set('sortBy', `${orderDesc ? '-' : ''}${sort}`);
+	if (searchValue) params.set('title', `*${searchValue}`);
+	params.set('page', String(page));
+	params.set('limit', String(ITEMS_PER_PAGE));
+
+	return params;
 }
-// эта функция берет объект фильтра из хранилища и превращает его в строку
-// она будет отправляться на сервер для пагинации и отображать текущий фильтер в адресе
 
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -39,60 +44,55 @@ function Home() {
 	const categoryId = useSelector(selectFilterCategory);
 	const sort = useSelector(selectFilterSort);
 	const orderDesc = useSelector(selectOrderDesc);
-	const searchValue = useSelector(
-		(state: RootState) => state.filterSlice.searchValue
-	);
-	const curentPagePagination = useSelector(selectCurentPagePagination);
-	const isDefaultFilter = useSelector(selectIsDefaultFilter)
-	const getQuery = buildQuery({
+	const searchValue = useSelector(selectSearchValue);
+	const currentPagePagination = useSelector(selectCurentPagePagination);
+	const isDefaultFilter = useSelector(selectIsDefaultFilter);
+	const queryParams = buildSearchParams({
 		categoryId,
 		sort,
 		orderDesc,
 		searchValue,
-		curentPagePagination,
+		page: currentPagePagination,
 	});
-	const getQueryForSearchParams = getQuery.slice(
-		0,
-		getQuery.lastIndexOf("&")
-	);
 
-	const { data, isFetching, isSuccess, error } = useGetItemsQuery(getQuery);
+	const getQueryURLParams = new URLSearchParams(queryParams);
+	getQueryURLParams.delete('limit');
+
+	const { data, isFetching, isSuccess, error } = useGetItemsQuery(
+		queryParams.toString(),
+	);
 
 	useEffect(() => {
 		const currentParams = searchParams.toString();
-		const newParams =
-			getQueryForSearchParams == "sortBy=-rating&page=1"
-				? ""
-				: getQueryForSearchParams;
+		const newParams = isDefaultFilter ? '' : getQueryURLParams;
 
-		if (newParams !== currentParams) {
+		if (newParams.toString() !== currentParams) {
 			if (isDefaultFilter) setSearchParams({});
-			else setSearchParams(new URLSearchParams(getQueryForSearchParams));
+			else setSearchParams(getQueryURLParams);
 		}
-	}, [categoryId, sort, orderDesc, searchValue, curentPagePagination]);
+	}, [categoryId, sort, orderDesc, searchValue, currentPagePagination]);
 	// эффект который срабатывает при изменении фильтра. Если открыта главная, параметры урл пустые
 	// В противном случае отображаются урл параметры фильтра
 
-	if (isFetching || !isSuccess)
+	if (isFetching)
 		return (
 			<>
-				{<h2>{categories[categoryId]} пиццы</h2>}
+				<h2>{categories[categoryId]} пиццы</h2>
 				<div className="pizzas">
-					{[...Array(4)].map((_, i) => (
+					{[...Array(ITEMS_PER_PAGE)].map((_, i) => (
 						<Skeleton key={i} />
 					))}
 				</div>
 			</>
 		);
-		//
 
-	if (error)
+	if (error || !isSuccess)
 		return (
 			<div className="content-wrapper info">
 				<h2>Произошла ошибка 😕</h2>
 				<p>
-					К сожалению, не удалось получить питсы. Попробуйте повторить
-					попытку позже.
+					К сожалению, не удалось получить питсы. Попробуйте повторить попытку
+					позже.
 				</p>
 			</div>
 		);
@@ -102,7 +102,7 @@ function Home() {
 
 	return (
 		<>
-			{<h2>{categories[categoryId]} пиццы</h2>}
+			<h2>{categories[categoryId]} пиццы</h2>
 			<div className="pizzas">
 				{items.length !== 0 ? (
 					items.map((item) => <Pizza key={item.id} {...item} />)
@@ -110,72 +110,24 @@ function Home() {
 					<div className="content-wrapper info">
 						<h2>Не найдено питс по заданным фильтрам 😔</h2>
 						<p>Поменяйте фильтры или перейдите на главную</p>
+						{currentPagePagination > totalPagePagination && <p>Либо переключите страницу снизу на более подходящую</p>}
 						<Link
 							to="/"
-							className="header__logo"
+							className="header__logo button button-cart"
 							onClick={() => dispatch(resetFilters())}
 						>
-							<button className="button button-cart">
-								Сбросить фильтры
-							</button>
+							Сбросить фильтры
 						</Link>
 					</div>
 				)}
 			</div>
 
 			{totalPagePagination > 1 && (
-				<div className="pagination">
-					<ul>
-						{curentPagePagination !== 1 ? (
-							<li>
-								<button
-									onClick={() =>
-										dispatch(
-											setCurentPagePagination(
-												curentPagePagination - 1
-											)
-										)
-									}
-								>{`<`}</button>
-							</li>
-						) : (
-							""
-						)}
-						{[...Array(totalPagePagination)].map((_, ind) => (
-							<li key={ind}>
-								<button
-									onClick={() =>
-										dispatch(
-											setCurentPagePagination(ind + 1)
-										)
-									}
-									className={
-										curentPagePagination === ind + 1
-											? "selected"
-											: ""
-									}
-								>
-									{ind + 1}
-								</button>
-							</li>
-						))}
-						{curentPagePagination !== totalPagePagination ? (
-							<li>
-								<button
-									onClick={() =>
-										dispatch(
-											setCurentPagePagination(
-												curentPagePagination + 1
-											)
-										)
-									}
-								>{`>`}</button>
-							</li>
-						) : (
-							""
-						)}
-					</ul>
-				</div>
+				<Pagination
+					currentP={currentPagePagination}
+					totalP={totalPagePagination}
+					onChangeP={ (page) => dispatch(setCurentPagePagination(page))}
+				/>
 			)}
 		</>
 	);

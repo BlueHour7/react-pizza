@@ -33,7 +33,7 @@ function setFiltersFromURL(): FilterSliceState {
 		sort: isSort(sort) ? sort : SortSelect.RATING,
 		orderDesc,
 		searchValue: params.get("title")?.slice(1, 11) ?? "",
-		curentPagePagination: Number(params.get("page") ?? 1),
+		page: Number(params.get("page") ?? 1),
 	};
 }
 
